@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 LABEL maintainer="tekrimon4ever@yandex.ru"
 LABEL name="Ugrasu TimeTable to iCS"
-LABEL description="Переводит расписание в формат файла ics"
+LABEL description="Переводит расписание в формат файла iCal"
 
 ENV WEB_APP_HOST="0.0.0.0"
 ENV WEB_APP_PORT="80"
@@ -24,5 +24,5 @@ RUN yes | apt install python3.12
 RUN yes | apt install python3-pip
 RUN pip install ics requests flask gunicorn
 
-CMD gunicorn --workers=2 --bind=$WEB_APP_HOST:$WEB_APP_PORT web:app
+ENTRYPOINT gunicorn --workers=2 --bind=$WEB_APP_HOST:$WEB_APP_PORT web:app
 

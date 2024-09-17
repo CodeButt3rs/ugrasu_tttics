@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  website:
+    restart: unless-stopped
+    image: ugrasuttics:latest
+    container_name: ugrasu_timetable_to_ics
+    build: .
+    ports:
+      - 5555:80/tcp

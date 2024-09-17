@@ -2,16 +2,20 @@ from ics import Calendar, Event
 import requests 
 import json
 
+
+query_args = {
+    "group": "groupOid",
+    "teacher": "lecturerOid",
+    "auditorium": "auditoriumOid"
+}
 base_url = "https://www.ugrasu.ru/api/directory/lessons"
 
-def request_lessons(groupOid: int, fromdate: str, todate: str) -> list[object]:
+def request_lessons(Oid: int, fromdate: str, todate: str, timetableType: str, *args, **kwargs) -> list[object]:
     query = {
-        'groupOid': groupOid,
+        query_args[timetableType]: Oid,
         'fromdate': fromdate,
         'todate': todate
     }
-
-    base_url = "https://www.ugrasu.ru/api/directory/lessons"
     lessons = requests.get(
         url=base_url,
         params=query
@@ -20,11 +24,20 @@ def request_lessons(groupOid: int, fromdate: str, todate: str) -> list[object]:
     lessons_json = json.loads(lessons.content.decode('utf-8'))
     return lessons_json
 
+def subgroup_filter(record: dict, sub_group: int):
+    if (group := record.get("subGroup")):
+        if group.split("/")[1] == sub_group:
+            return True
+        return False
+    return True
+
 def make_calendar(**kwargs):
 
-    file_name = f"{kwargs.get('groupOid')}-{kwargs.get('fromdate')}-{kwargs.get('todate')}.ics"
+    file_name = f"{kwargs.get('Oid')}-{kwargs.get('fromdate')}-{kwargs.get('todate')}.ics"
 
     lessons = request_lessons(**kwargs)
+    if sub_group := kwargs.get("subgroup") and kwargs.get('timetableType') == 'group':
+        lessons = list(filter(lambda x: subgroup_filter(x, sub_group), lessons))
     calendar = Calendar()
 
     for i in lessons:

@@ -1,5 +1,5 @@
 import flask
-from . import icsss
+import icsss
 from flask import request
 
 app = flask.Flask(__name__)

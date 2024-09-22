@@ -26,7 +26,7 @@ def request_lessons(Oid: int, fromdate: str, todate: str, timetableType: str, *a
 
 def subgroup_filter(record: dict, sub_group: int):
     if (group := record.get("subGroup")):
-        if group.split("/")[1] == sub_group:
+        if int(group.split("/")[1]) == sub_group:
             return True
         return False
     return True

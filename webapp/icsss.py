@@ -26,9 +26,7 @@ def request_lessons(Oid: int, fromdate: str, todate: str, timetableType: str, *a
 
 def subgroup_filter(record: dict, sub_group: int):
     if (group := record.get("subGroup")):
-        if int(group.split("/")[1]) == sub_group:
-            return True
-        return False
+        return group.split("/")[1] == sub_group
     return True
 
 def make_calendar(**kwargs):
@@ -36,8 +34,8 @@ def make_calendar(**kwargs):
     file_name = f"{kwargs.get('Oid')}-{kwargs.get('fromdate')}-{kwargs.get('todate')}.ics"
 
     lessons = request_lessons(**kwargs)
-    if sub_group := kwargs.get("subgroup") and kwargs.get('timetableType') == 'group':
-        lessons = list(filter(lambda x: subgroup_filter(x, sub_group), lessons))
+    if kwargs.get("subgroup") != '0' and kwargs.get('timetableType') == 'group':
+        lessons = list(filter(lambda x: subgroup_filter(x, kwargs.get("subgroup")), lessons))
     calendar = Calendar()
 
     for i in lessons:

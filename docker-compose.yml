@@ -8,3 +8,9 @@ services:
     build: .
     ports:
       - 5555:80/tcp
+    volumes:
+      - ics-data:/mnt/md/ics-docker-data
+
+volumes:
+  ics-data:
+
